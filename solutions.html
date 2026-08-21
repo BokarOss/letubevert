@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solutions & Accompagnement — Letubevert</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { brand: { DEFAULT: '#00A86B', light: '#10B981', dark: '#065F46', bright: '#E6F7F0' } }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .glass-nav { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(12px); }
+  </style>
+</head>
+<body class="bg-[#FAFAFA] text-slate-900 font-sans antialiased">
+
+  <!-- HEADER -->
+  <header class="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-brand flex items-center justify-center text-white font-black text-xl">T</div>
+        <div class="flex flex-col">
+          <span class="font-extrabold text-xl tracking-tight text-slate-900 leading-none">Letubevert<span class="text-brand">.fr</span></span>
+          <span class="text-[10px] font-bold tracking-widest text-slate-600 uppercase mt-0.5">Engine Architecture (LEA)</span>
+        </div>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
+        <a href="index.html" class="hover:text-brand transition-colors">Accueil</a>
+        <a href="portail.html" class="hover:text-brand transition-colors font-semibold text-slate-800">Portail Carto (Live)</a>
+        <a href="indicateurs.html" class="hover:text-brand transition-colors">Les 40 Indicateurs</a>
+        <a href="solutions.html" class="text-brand font-semibold">Solutions</a>
+      </nav>
+
+      <a href="#audit" class="hidden sm:inline-flex px-5 py-2.5 rounded-full bg-brand hover:bg-brand-dark text-white text-sm font-semibold transition-all">
+        Demander un audit
+      </a>
+    </div>
+  </header>
+
+  <!-- CONTENU SOLUTIONS -->
+  <main class="pt-36 pb-24 max-w-7xl mx-auto px-6">
+    
+    <div class="text-center max-w-3xl mx-auto">
+      <span class="text-xs font-bold uppercase tracking-widest text-brand">Accompagnement Décisionnel</span>
+      <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 mt-3">
+        Des solutions concrètes pour chaque acteur de la mobilité.
+      </h1>
+      <p class="text-slate-600 mt-4 text-base sm:text-lg">
+        Letubevert intervient comme tiers de confiance scientifique pour aligner les impératifs des entreprises, des AOM et des transporteurs.
+      </p>
+    </div>
+
+    <!-- 3 OFFRES SECTORIELLES -->
+    <div class="grid md:grid-cols-3 gap-8 mt-16">
+      
+      <div class="p-8 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-brand flex items-center justify-center mb-6">
+            <i data-lucide="building" class="w-6 h-6"></i>
+          </div>
+          <h2 class="text-xl font-bold text-slate-900">Entreprises & Zones d'Activité</h2>
+          <p class="text-xs text-slate-500 mt-3 leading-relaxed">
+            Audit des trajets domicile-travail des salariés, valorisation du Forfait Mobilités Durables (FMD), réduction des besoins en stationnement et abattement direct du bilan carbone Scope 3.
+          </p>
+        </div>
+        <div class="mt-8 pt-4 border-t border-slate-100 text-xs font-semibold text-brand">
+          Plans de Mobilité Employeurs (PDME)
+        </div>
+      </div>
+
+      <div class="p-8 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-brand flex items-center justify-center mb-6">
+            <i data-lucide="landmark" class="w-6 h-6"></i>
+          </div>
+          <h2 class="text-xl font-bold text-slate-900">Collectivités & AOM</h2>
+          <p class="text-xs text-slate-500 mt-3 leading-relaxed">
+            Identification des lignes de cars express prioritaires, désengorgement des rocades et axes pénétrants sans travaux lourds d'infrastructure, alignement sur les objectifs PCAET.
+          </p>
+        </div>
+        <div class="mt-8 pt-4 border-t border-slate-100 text-xs font-semibold text-brand">
+          Planification Territoriale
+        </div>
+      </div>
+
+      <div class="p-8 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between">
+        <div>
+          <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-brand flex items-center justify-center mb-6">
+            <i data-lucide="bus" class="w-6 h-6"></i>
+          </div>
+          <h2 class="text-xl font-bold text-slate-900">Opérateurs de Transport</h2>
+          <p class="text-xs text-slate-500 mt-3 leading-relaxed">
+            Optimisation du taux d'occupation des véhicules (cible 80%), traçage d'itinéraires rentables et double-usage des flottes scolaires ou interurbaines aux heures de pointe.
+          </p>
+        </div>
+        <div class="mt-8 pt-4 border-t border-slate-100 text-xs font-semibold text-brand">
+          Exploitation & Rentabilité
+        </div>
+      </div>
+
+    </div>
+
+    <!-- FORMULAIRE D'AUDIT -->
+    <div id="audit" class="mt-20 max-w-4xl mx-auto">
+      <div class="bg-[#FAFAFA] p-8 sm:p-12 rounded-3xl border border-slate-200 shadow-glass">
+        <div class="text-center max-w-xl mx-auto mb-10">
+          <h3 class="text-2xl font-bold text-slate-900">Demander un diagnostic de corridor</h3>
+          <p class="text-xs text-slate-500 mt-2">Transmettez-nous vos enjeux territoriaux pour planifier une démonstration technique.</p>
+        </div>
+
+        <form class="grid sm:grid-cols-2 gap-6 text-left">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Nom & Prénom</label>
+            <input type="text" placeholder="Ex. : Claire Dupont" class="w-full px-4 py-3 rounded-xl bg-white border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand" />
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Structure / Collectivité</label>
+            <input type="text" placeholder="Ex. : Direction Mobilité & Climat" class="w-full px-4 py-3 rounded-xl bg-white border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Email Professionnel</label>
+            <input type="email" placeholder="contact@organisation.fr" class="w-full px-4 py-3 rounded-xl bg-white border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Périmètre d'Étude</label>
+            <textarea rows="4" placeholder="Précisez la zone géographique, les axes de congestion identifiés ou le nombre de salariés concernés..." class="w-full px-4 py-3 rounded-xl bg-white border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand"></textarea>
+          </div>
+          <div class="sm:col-span-2">
+            <button type="button" class="w-full py-4 rounded-xl bg-brand hover:bg-brand-dark text-white font-bold text-sm shadow-glow-green transition-all">
+              Transmettre la demande d'audit
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-950 text-slate-500 py-12 border-t border-slate-900 text-xs text-center">
+    © 2026 Letubevert. Tous droits réservés.
+  </footer>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

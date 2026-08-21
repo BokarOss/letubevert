@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portail Cartographique LEA — Letubevert</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: { 
+            brand: { DEFAULT: '#00A86B', light: '#10B981', dark: '#065F46', bright: '#E6F7F0' },
+            cyanCustom: '#06B6D4'
+          },
+          boxShadow: {
+            'glow-neon': '0 0 25px rgba(16, 185, 129, 0.6)',
+            'glow-cyan': '0 0 15px rgba(6, 182, 212, 0.6)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <style>
+    .leaflet-popup-content-wrapper {
+      background: rgba(15, 23, 42, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(6, 182, 212, 0.4);
+      color: #fff;
+      border-radius: 0.75rem;
+      box-shadow: 0 15px 30px rgba(0,0,0,0.6);
+    }
+    .leaflet-popup-tip {
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid rgba(6, 182, 212, 0.4);
+    }
+    
+    .city-label-cyan {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid #06B6D4;
+      color: #06B6D4;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+      box-shadow: 0 0 8px rgba(6, 182, 212, 0.5);
+      transition: opacity 0.3s ease;
+    }
+
+    .city-dot-cyan {
+      width: 8px;
+      height: 8px;
+      background: #06B6D4;
+      border: 1.5px solid #ffffff;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #06B6D4;
+      transition: transform 0.2s ease;
+    }
+    .city-dot-cyan:hover {
+      transform: scale(1.5);
+    }
+
+    aside::-webkit-scrollbar { width: 5px; }
+    aside::-webkit-scrollbar-track { background: #090d16; }
+    aside::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; }
+    aside::-webkit-scrollbar-thumb:hover { background: #06b6d4; }
+  </style>
+</head>
+<body class="bg-slate-950 text-white flex flex-col h-screen overflow-hidden">
+
+  <!-- HEADER -->
+  <header class="h-16 bg-slate-950/90 backdrop-blur-md border-b border-slate-800 px-6 flex items-center justify-between shrink-0 z-20">
+    <div class="flex items-center gap-4">
+      <a href="index.html" class="flex items-center gap-2.5 hover:opacity-85 transition-opacity">
+        <div class="w-8 h-8 rounded-lg bg-brand flex items-center justify-center text-white font-black text-sm shadow-[0_0_12px_#00A86B]">T</div>
+        <span class="font-extrabold text-white text-base tracking-tight">Letubevert<span class="text-brand">.fr</span></span>
+      </a>
+      <span class="text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-800/80 font-mono flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
+        LEA Engine — Données Mobiles Réelles
+      </span>
+    </div>
+
+    <div class="flex items-center gap-6 text-xs">
+      <a href="index.html" class="text-slate-400 hover:text-white transition-colors">Accueil</a>
+      <a href="indicateurs.html" class="text-slate-400 hover:text-white transition-colors">Les 40 Indicateurs</a>
+      <a href="solutions.html" class="text-slate-400 hover:text-white transition-colors">Solutions</a>
+      <a href="solutions.html#audit" class="px-4 py-2 rounded-full bg-brand hover:bg-brand-dark text-white font-bold transition-all shadow-[0_0_15px_rgba(0,168,107,0.4)]">
+        Demander un audit d'axe
+      </a>
+    </div>
+  </header>
+
+  <!-- WORKSPACE PRINCIPAL -->
+  <div class="flex flex-1 relative overflow-hidden">
+    
+    <!-- CONTENEUR CARTE -->
+    <div id="map" class="flex-1 h-full z-0 bg-slate-900"></div>
+
+    <!-- BARRE D'OUTILS ET LÉGENDE -->
+    <div class="absolute top-4 left-4 z-10 flex flex-col gap-2">
+      <button onclick="resetMapView()" class="px-3.5 py-2 rounded-xl bg-slate-900/90 hover:bg-slate-800 border border-slate-700 text-xs font-semibold text-slate-300 backdrop-blur-md flex items-center gap-2 shadow-lg transition-all">
+        <i data-lucide="scan" class="w-3.5 h-3.5 text-cyan-400"></i>
+        Vue globale
+      </button>
+
+      <div class="p-3 rounded-xl bg-slate-900/90 border border-slate-800 text-[11px] backdrop-blur-md shadow-xl flex flex-col gap-1.5 text-slate-300">
+        <div class="flex items-center gap-2">
+          <span class="w-3.5 h-1.5 rounded-full bg-brand shadow-[0_0_8px_#10B981]"></span>
+          <span>Corridor routier massifié (Tube Vert)</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#06B6D4]"></span>
+          <span>Communes contributrices (Zoomer pour détailler)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VOLET LATÉRAL DROIT -->
+    <aside class="w-[440px] bg-slate-950/95 backdrop-blur-md border-l border-slate-800 p-6 flex flex-col justify-between overflow-y-auto z-10 shadow-2xl">
+      <div>
+        
+        <!-- ENCART SOURCE DES DONNÉES GÉOLOCALISÉES -->
+        <div class="p-3 rounded-xl bg-slate-900/90 border border-cyan-500/30 shadow-[0_0_12px_rgba(6,182,212,0.1)] mb-4">
+          <div class="flex items-center gap-2 mb-1">
+            <i data-lucide="radio" class="w-3.5 h-3.5 text-cyan-400 animate-pulse"></i>
+            <span class="text-[10px] font-bold uppercase tracking-wider text-cyan-400">Source : Traces Mobiles Anonymisées</span>
+          </div>
+          <p class="text-[10px] text-slate-400 leading-tight">
+            Matrices Origine-Destination issues de l'activité réelle des téléphones portables sur les relais (OBS / Recensement Insee).
+          </p>
+        </div>
+
+        <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Corridor Sélectionné</span>
+          <span id="side-status" class="px-2.5 py-0.5 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 text-[10px] font-bold">
+            Haute Opportunité
+          </span>
+        </div>
+
+        <h2 id="side-title" class="text-lg font-extrabold text-white mt-3 leading-snug">
+          Axe Nord (A10) : Haute-Gironde ➔ Bordeaux Centre
+        </h2>
+        <p id="side-desc" class="text-xs text-slate-400 mt-1 leading-relaxed">
+          Corridor autoroutier A10 saturé. Bassin périurbain vers pôles tertiaires centraux.
+        </p>
+
+        <!-- SÉLECTEUR DE CORRIDOR -->
+        <div class="mt-4">
+          <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Choisir un corridor audité</label>
+          <div class="grid grid-cols-1 gap-1.5" id="corridor-buttons"></div>
+        </div>
+
+        <!-- 4 INDICATEURS CLÉS -->
+        <div class="grid grid-cols-2 gap-2.5 mt-5">
+          <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800">
+            <div class="text-[10px] text-slate-400 font-medium">1. Déplacements / j (FJM)</div>
+            <div id="m-fjm" class="text-lg font-black text-white mt-0.5">58 400</div>
+            <div class="text-[9px] text-slate-500">Flux global observé</div>
+          </div>
+          <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800">
+            <div class="text-[10px] text-slate-400 font-medium">2. Solos captables (PNM)</div>
+            <div id="m-pnm" class="text-lg font-black text-cyan-400 mt-0.5">1 450</div>
+            <div class="text-[9px] text-slate-500">Taux report cible : 2,48%</div>
+          </div>
+          <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800">
+            <div class="text-[10px] text-slate-400 font-medium">3. CO₂ évité / an</div>
+            <div id="m-co2" class="text-lg font-black text-emerald-400 mt-0.5">1 820 t</div>
+            <div class="text-[9px] text-slate-500">0,15 kg/km × 38 km × 220 j</div>
+          </div>
+          <div class="p-3 bg-slate-900/80 rounded-xl border border-slate-800">
+            <div class="text-[10px] text-slate-400 font-medium">4. Économie / actif</div>
+            <div id="m-eco" class="text-lg font-black text-white mt-0.5">1 520 €</div>
+            <div class="text-[9px] text-slate-500">Gain net carburant & usure</div>
+          </div>
+        </div>
+
+        <!-- DÉTAIL DES CALCULS ET CONTRIBUTIONS COMMUNALES -->
+        <div class="mt-5">
+          <div class="flex items-center justify-between mb-2">
+            <h3 class="text-xs font-bold uppercase tracking-wider text-cyan-400 flex items-center gap-1.5">
+              <i data-lucide="layers" class="w-3.5 h-3.5"></i>
+              Contributions Communales Précises
+            </h3>
+            <span class="text-[10px] text-slate-500 font-mono">OBS / Insee</span>
+          </div>
+
+          <div class="bg-slate-900/90 rounded-xl border border-slate-800 p-3 text-xs overflow-hidden">
+            <div class="mb-3">
+              <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-cyan-400"></span>
+                Communes d'Origine (Départs) :
+              </div>
+              <div id="list-origins" class="space-y-1"></div>
+            </div>
+
+            <div class="pt-2 border-t border-slate-800">
+              <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                Communes de Destination (Arrivées) :
+              </div>
+              <div id="list-destinations" class="space-y-1"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-5 pt-4 border-t border-slate-800">
+        <a href="solutions.html#audit" class="w-full py-3 rounded-xl bg-brand hover:bg-brand-dark text-white font-bold text-xs flex items-center justify-center gap-2 transition-all shadow-[0_0_15px_rgba(0,168,107,0.3)]">
+          <i data-lucide="file-check-2" class="w-4 h-4"></i>
+          Exporter le rapport d'ingénierie complet
+        </a>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- SCRIPT LEAFLET & LOGIQUE D'AFFICHAGE -->
+  <script>
+    lucide.createIcons();
+
+    const map = L.map('map', {
+      zoomControl: false
+    }).setView([44.86, -0.55], 11);
+
+    L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+      attribution: '© OpenStreetMap | Données OBS & Recensement Insee | LEA',
+      maxZoom: 18
+    }).addTo(map);
+
+    const corridorsData = {
+      "c1": {
+        id: "c1",
+        num: "01",
+        shortName: "Axe Nord (A10)",
+        title: "Axe Nord (A10) : Haute-Gironde ➔ Bordeaux Centre",
+        desc: "Corridor autoroutier A10 saturé. Bassin périurbain vers pôles tertiaires centraux.",
+        status: "Haute Opportunité",
+        fjm: "58 400", pnm: "1 450", co2: "1 820 t", eco: "1 520 €",
+        routeCoords: [
+          [45.015, -0.442], [44.992, -0.450], [44.965, -0.470], 
+          [44.935, -0.498], [44.908, -0.522], [44.882, -0.540], 
+          [44.868, -0.552], [44.850, -0.570], [44.837, -0.579]
+        ],
+        origins: [
+          { name: "Saint-André-de-Cubzac", flux: "18 200", solos: "450", center: [45.015, -0.442], bounds: [[45.030, -0.460], [45.000, -0.425]] },
+          { name: "Cubzac-les-Ponts", flux: "4 300", solos: "110", center: [44.972, -0.458], bounds: [[44.980, -0.468], [44.965, -0.448]] },
+          { name: "Saint-Loubès", flux: "11 500", solos: "290", center: [44.917, -0.428], bounds: [[44.930, -0.445], [44.905, -0.410]] },
+          { name: "Sainte-Eulalie", flux: "7 800", solos: "190", center: [44.908, -0.470], bounds: [[44.918, -0.485], [44.898, -0.455]] },
+          { name: "Ambarès-et-Lagrave", flux: "11 200", solos: "280", center: [44.925, -0.485], bounds: [[44.940, -0.505], [44.910, -0.465]] },
+          { name: "Carbon-Blanc", flux: "5 400", solos: "130", center: [44.895, -0.525], bounds: [[44.905, -0.535], [44.885, -0.515]] }
+        ],
+        destinations: [
+          { name: "Bordeaux Centre / Mériadeck", flux: "26 400", solos: "660", center: [44.837, -0.579], bounds: [[44.850, -0.595], [44.825, -0.560]] },
+          { name: "Bordeaux Euratlantique", flux: "14 800", solos: "370", center: [44.824, -0.556], bounds: [[44.832, -0.565], [44.815, -0.545]] },
+          { name: "Cenon / Lormont", flux: "17 200", solos: "420", center: [44.858, -0.530], bounds: [[44.870, -0.540], [44.848, -0.515]] }
+        ]
+      },
+
+      "c2": {
+        id: "c2",
+        num: "02",
+        shortName: "Rocade Est (Fret)",
+        title: "Rocade Est (N230) : Entre-deux-Mers ➔ Hub Logistique Bassens",
+        desc: "Flux tangentiel le long de la rocade est reliant l'Entre-deux-Mers au port.",
+        status: "Haute Opportunité",
+        fjm: "44 200", pnm: "1 120", co2: "1 390 t", eco: "1 340 €",
+        routeCoords: [
+          [44.835, -0.420], [44.842, -0.460], [44.852, -0.495], 
+          [44.870, -0.505], [44.890, -0.515], [44.908, -0.525], 
+          [44.918, -0.538]
+        ],
+        origins: [
+          { name: "Fargues-Saint-Hilaire", flux: "6 800", solos: "170", center: [44.825, -0.445], bounds: [[44.835, -0.460], [44.815, -0.430]] },
+          { name: "Tresses", flux: "8 400", solos: "210", center: [44.848, -0.482], bounds: [[44.855, -0.498], [44.840, -0.465]] },
+          { name: "Sallebœuf", flux: "5 200", solos: "130", center: [44.865, -0.398], bounds: [[44.875, -0.415], [44.855, -0.380]] },
+          { name: "Pompignac", flux: "6 100", solos: "155", center: [44.852, -0.435], bounds: [[44.865, -0.450], [44.840, -0.420]] },
+          { name: "Beychac-et-Caillau", flux: "5 900", solos: "150", center: [44.872, -0.375], bounds: [[44.885, -0.395], [44.860, -0.355]] },
+          { name: "Artigues-près-Bordeaux", flux: "11 800", solos: "305", center: [44.860, -0.495], bounds: [[44.870, -0.510], [44.850, -0.480]] }
+        ],
+        destinations: [
+          { name: "Bassens (Zone Portuaire/Fret)", flux: "22 500", solos: "570", center: [44.918, -0.538], bounds: [[44.930, -0.550], [44.905, -0.525]] },
+          { name: "Artigues Parcs d'Activités", flux: "12 800", solos: "325", center: [44.855, -0.485], bounds: [[44.865, -0.495], [44.845, -0.475]] },
+          { name: "Yvrac / Z.I.", flux: "8 900", solos: "225", center: [44.880, -0.462], bounds: [[44.890, -0.475], [44.870, -0.448]] }
+        ]
+      },
+
+      "c3": {
+        id: "c3",
+        num: "03",
+        shortName: "Corridor Sud (A63)",
+        title: "Corridor Sud (A63) : Bassin / Val de l'Eyre ➔ Pôle Aéroparc",
+        desc: "Axe autoroutier A63 à très forte charge pendulaire vers Pessac et Mérignac.",
+        status: "Haute Opportunité",
+        fjm: "64 800", pnm: "1 920", co2: "2 410 t", eco: "1 680 €",
+        routeCoords: [
+          [44.645, -0.760], [44.685, -0.715], [44.725, -0.675], 
+          [44.765, -0.638], [44.795, -0.620], [44.825, -0.640], 
+          [44.838, -0.685]
+        ],
+        origins: [
+          { name: "Biganos / Facture", flux: "14 200", solos: "420", center: [44.645, -0.975], bounds: [[44.665, -0.995], [44.625, -0.955]] },
+          { name: "Marcheprime", flux: "9 800", solos: "290", center: [44.692, -0.855], bounds: [[44.710, -0.875], [44.675, -0.835]] },
+          { name: "Le Barp", flux: "8 600", solos: "255", center: [44.608, -0.732], bounds: [[44.625, -0.755], [44.590, -0.710]] },
+          { name: "Salles / Val de l'Eyre", flux: "7 400", solos: "220", center: [44.550, -0.870], bounds: [[44.570, -0.895], [44.530, -0.845]] },
+          { name: "Cestas", flux: "13 500", solos: "400", center: [44.745, -0.685], bounds: [[44.765, -0.710], [44.725, -0.660]] },
+          { name: "Mios / Gujan", flux: "11 300", solos: "335", center: [44.605, -0.935], bounds: [[44.625, -0.960], [44.585, -0.910]] }
+        ],
+        destinations: [
+          { name: "Mérignac Aéroparc (Dassault/Thales)", flux: "34 500", solos: "1 020", center: [44.838, -0.685], bounds: [[44.855, -0.710], [44.820, -0.660]] },
+          { name: "Pessac (Bersol / Bioparc)", flux: "21 800", solos: "650", center: [44.795, -0.638], bounds: [[44.810, -0.660], [44.780, -0.615]] },
+          { name: "Le Haillan Aérospatial", flux: "8 500", solos: "250", center: [44.872, -0.678], bounds: [[44.885, -0.695], [44.860, -0.660]] }
+        ]
+      },
+
+      "c4": {
+        id: "c4",
+        num: "04",
+        shortName: "Axe Ouest (Santé)",
+        title: "Axe Ouest (D1215/D106) : Saint-Médard ➔ CHU Pellegrin / Haut-Lévêque",
+        desc: "Trajets pendulaires en horaires décalés reliant le Médoc pavillonnaire aux hôpitaux.",
+        status: "Grappe Requise",
+        fjm: "31 500", pnm: "780", co2: "960 t", eco: "1 180 €",
+        routeCoords: [
+          [44.905, -0.760], [44.885, -0.715], [44.865, -0.650], 
+          [44.830, -0.605], [44.800, -0.602]
+        ],
+        origins: [
+          { name: "Saint-Médard-en-Jalles", flux: "12 400", solos: "310", center: [44.895, -0.718], bounds: [[44.915, -0.745], [44.875, -0.690]] },
+          { name: "Le Taillan-Médoc", flux: "6 800", solos: "170", center: [44.905, -0.670], bounds: [[44.920, -0.685], [44.890, -0.655]] },
+          { name: "Saint-Aubin-de-Médoc", flux: "4 900", solos: "120", center: [44.912, -0.725], bounds: [[44.925, -0.745], [44.900, -0.705]] },
+          { name: "Martignas-sur-Jalle", flux: "4 200", solos: "105", center: [44.842, -0.775], bounds: [[44.855, -0.795], [44.830, -0.755]] },
+          { name: "Saint-Jean-d'Illac", flux: "3 200", solos: "75", center: [44.812, -0.785], bounds: [[44.825, -0.805], [44.800, -0.765]] }
+        ],
+        destinations: [
+          { name: "Bordeaux (CHU Pellegrin / St-Augustin)", flux: "19 200", solos: "475", center: [44.830, -0.605], bounds: [[44.840, -0.620], [44.820, -0.590]] },
+          { name: "Pessac (CHU Haut-Lévêque / Xavier-Arnozan)", flux: "12 300", solos: "305", center: [44.790, -0.612], bounds: [[44.805, -0.630], [44.775, -0.595]] }
+        ]
+      }
+    };
+
+    let persistentLayers = [];
+    let zoomDependentLayers = [];
+    const buttonsContainer = document.getElementById('corridor-buttons');
+
+    Object.keys(corridorsData).forEach((key) => {
+      const c = corridorsData[key];
+      const btn = document.createElement('button');
+      btn.id = `btn-${key}`;
+      btn.className = "w-full text-left p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-cyan-500/50 text-xs font-semibold text-slate-300 transition-all flex items-center justify-between";
+      btn.innerHTML = `
+        <div class="flex items-center gap-2">
+          <span class="w-4 h-4 rounded bg-slate-800 text-cyan-400 flex items-center justify-center font-mono text-[9px] font-bold">${c.num}</span>
+          <span class="truncate">${c.shortName}</span>
+        </div>
+        <span class="text-cyan-400 font-mono text-[11px]">${c.pnm} solos/j</span>
+      `;
+      btn.onclick = () => selectCorridor(key);
+      buttonsContainer.appendChild(btn);
+    });
+
+    function updateZoomVisibility() {
+      const z = map.getZoom();
+      zoomDependentLayers.forEach(({ minZoom, layer }) => {
+        if (z >= minZoom) {
+          if (!map.hasLayer(layer)) map.addLayer(layer);
+        } else {
+          if (map.hasLayer(layer)) map.removeLayer(layer);
+        }
+      });
+    }
+
+    map.on('zoomend', updateZoomVisibility);
+
+    function selectCorridor(key) {
+      const c = corridorsData[key];
+
+      persistentLayers.forEach(l => map.removeLayer(l));
+      zoomDependentLayers.forEach(({ layer }) => map.removeLayer(layer));
+      persistentLayers = [];
+      zoomDependentLayers = [];
+
+      document.getElementById('side-title').textContent = c.title;
+      document.getElementById('side-desc').textContent = c.desc;
+      document.getElementById('side-status').textContent = c.status;
+      document.getElementById('m-fjm').textContent = c.fjm;
+      document.getElementById('m-pnm').textContent = c.pnm;
+      document.getElementById('m-co2').textContent = c.co2;
+      document.getElementById('m-eco').textContent = c.eco;
+
+      const origContainer = document.getElementById('list-origins');
+      origContainer.innerHTML = '';
+      c.origins.forEach(item => {
+        const row = document.createElement('div');
+        row.className = "flex items-center justify-between text-[11px] py-0.5 text-slate-300";
+        row.innerHTML = `<span class="text-cyan-300">• ${item.name}</span> <span class="font-mono text-slate-400">${item.flux} FJM <b class="text-cyan-400">(${item.solos} solos)</b></span>`;
+        origContainer.appendChild(row);
+      });
+
+      const destContainer = document.getElementById('list-destinations');
+      destContainer.innerHTML = '';
+      c.destinations.forEach(item => {
+        const row = document.createElement('div');
+        row.className = "flex items-center justify-between text-[11px] py-0.5 text-slate-300";
+        row.innerHTML = `<span class="text-emerald-300">• ${item.name}</span> <span class="font-mono text-slate-400">${item.flux} FJM <b class="text-emerald-400">(${item.solos} solos)</b></span>`;
+        destContainer.appendChild(row);
+      });
+
+      const allBounds = [];
+
+      c.origins.forEach(item => {
+        allBounds.push(item.bounds[0], item.bounds[1]);
+
+        const rect = L.rectangle(item.bounds, {
+          color: '#06B6D4',
+          weight: 1.5,
+          opacity: 0.8,
+          fillColor: '#06B6D4',
+          fillOpacity: 0.08,
+          dashArray: '3, 3'
+        });
+        rect.bindPopup(`<b>${item.name}</b><br>Flux : ${item.flux} trajets/j<br>Solos captables : ${item.solos}`);
+        zoomDependentLayers.push({ minZoom: 12, layer: rect });
+
+        const labelIcon = L.divIcon({
+          className: 'city-label-cyan',
+          html: item.name,
+          iconSize: null,
+          iconAnchor: [item.name.length * 3, 8]
+        });
+        const labelMarker = L.marker(item.center, { icon: labelIcon });
+        labelMarker.bindPopup(`<b>${item.name}</b><br>Flux : ${item.flux} trajets/j`);
+        zoomDependentLayers.push({ minZoom: 12, layer: labelMarker });
+
+        const dotIcon = L.divIcon({
+          className: 'custom-dot',
+          html: '<div class="city-dot-cyan"></div>',
+          iconSize: [8, 8],
+          iconAnchor: [4, 4]
+        });
+        const dotMarker = L.marker(item.center, { icon: dotIcon });
+        dotMarker.bindPopup(`<b>${item.name}</b><br>Flux : ${item.flux} trajets/j<br>Solos : ${item.solos}`);
+        persistentLayers.push(dotMarker);
+        dotMarker.addTo(map);
+      });
+
+      c.destinations.forEach(item => {
+        allBounds.push(item.bounds[0], item.bounds[1]);
+
+        const rect = L.rectangle(item.bounds, {
+          color: '#10B981',
+          weight: 2,
+          opacity: 0.85,
+          fillColor: '#10B981',
+          fillOpacity: 0.12
+        });
+        rect.bindPopup(`<b>${item.name}</b><br>Flux reçu : ${item.flux} trajets/j<br>Gisement : ${item.solos} actifs`);
+        zoomDependentLayers.push({ minZoom: 12, layer: rect });
+
+        const labelIcon = L.divIcon({
+          className: 'city-label-cyan',
+          html: item.name,
+          iconSize: null,
+          iconAnchor: [item.name.length * 3, 8]
+        });
+        const labelMarker = L.marker(item.center, { icon: labelIcon });
+        labelMarker.bindPopup(`<b>${item.name}</b><br>Pôle : ${item.flux} trajets/j`);
+        zoomDependentLayers.push({ minZoom: 12, layer: labelMarker });
+
+        const dotIcon = L.divIcon({
+          className: 'custom-dot',
+          html: '<div class="city-dot-cyan" style="background:#10B981; box-shadow:0 0 8px #10B981;"></div>',
+          iconSize: [8, 8],
+          iconAnchor: [4, 4]
+        });
+        const dotMarker = L.marker(item.center, { icon: dotIcon });
+        dotMarker.bindPopup(`<b>${item.name}</b><br>Flux reçu : ${item.flux} trajets/j`);
+        persistentLayers.push(dotMarker);
+        dotMarker.addTo(map);
+      });
+
+      const halo = L.polyline(c.routeCoords, {
+        color: '#10B981',
+        weight: 20,
+        opacity: 0.35,
+        lineCap: 'round',
+        lineJoin: 'round'
+      }).addTo(map);
+
+      const core = L.polyline(c.routeCoords, {
+        color: '#34D399',
+        weight: 4,
+        opacity: 0.95,
+        lineCap: 'round',
+        lineJoin: 'round'
+      }).addTo(map);
+
+      core.bindPopup(`
+        <div class="text-xs p-1">
+          <b class="text-white text-sm">${c.shortName}</b>
+          <div class="text-emerald-400 mt-1 font-semibold">${c.fjm} trajets/j — ${c.co2} CO₂ évité</div>
+        </div>
+      `);
+
+      persistentLayers.push(halo, core);
+      c.routeCoords.forEach(pt => allBounds.push(pt));
+
+      map.flyToBounds(allBounds, { padding: [40, 40], duration: 1.2 });
+      setTimeout(updateZoomVisibility, 1250);
+
+      Object.keys(corridorsData).forEach(k => {
+        const btn = document.getElementById(`btn-${k}`);
+        if (k === key) {
+          btn.className = "w-full text-left p-2.5 rounded-xl bg-cyan-950/40 border border-cyan-400 text-xs font-bold text-white shadow-[0_0_12px_rgba(6,182,212,0.3)] flex items-center justify-between";
+        } else {
+          btn.className = "w-full text-left p-2.5 rounded-xl bg-slate-900/60 border border-slate-800 hover:border-slate-700 text-xs font-semibold text-slate-400 flex items-center justify-between";
+        }
+      });
+    }
+
+    function resetMapView() {
+      selectCorridor('c1');
+    }
+
+    selectCorridor('c1');
+  </script>
+</body>
+</html>

@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Letubevert — Moteur d'Ingénierie & Planification de la Décarbonation</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: { DEFAULT: '#00A86B', light: '#10B981', dark: '#065F46', bright: '#E6F7F0' }
+          },
+          boxShadow: {
+            'glow-green': '0 0 25px -5px rgba(16, 185, 129, 0.35)',
+            'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.05)'
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .glass-nav { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(12px); }
+    .hero-glow { background: radial-gradient(circle at 50% 20%, rgba(16, 185, 129, 0.12) 0%, rgba(255, 255, 255, 0) 70%); }
+    .glow-tube { box-shadow: 0 0 15px #10B981; }
+  </style>
+</head>
+<body class="bg-[#FAFAFA] text-slate-900 font-sans antialiased">
+
+  <!-- NAVIGATION -->
+  <header class="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="index.html" class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand to-brand-light flex items-center justify-center text-white font-black text-xl shadow-glow-green">T</div>
+        <div class="flex flex-col">
+          <span class="font-extrabold text-xl tracking-tight text-slate-900 leading-none">Letubevert<span class="text-brand">.fr</span></span>
+          <span class="text-[10px] font-bold tracking-widest text-slate-600 uppercase mt-0.5">Engine Architecture (LEA)</span>
+        </div>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-600">
+        <a href="index.html" class="text-brand font-semibold">Accueil</a>
+        <a href="portail.html" class="hover:text-brand transition-colors flex items-center gap-1.5 font-semibold text-slate-800">
+          <span class="w-2 h-2 rounded-full bg-brand-light animate-pulse"></span>
+          Portail Carto (Live)
+        </a>
+        <a href="indicateurs.html" class="hover:text-brand transition-colors">Les 40 Indicateurs</a>
+        <a href="solutions.html" class="hover:text-brand transition-colors">Offre & Impact</a>
+      </nav>
+
+      <a href="solutions.html#audit" class="hidden sm:inline-flex px-5 py-2.5 rounded-full bg-brand hover:bg-brand-dark text-white text-sm font-semibold shadow-glow-green transition-all">
+        Demander un audit
+      </a>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="relative pt-36 pb-16 md:pt-44 md:pb-24 hero-glow text-center">
+    <div class="max-w-7xl mx-auto px-6 relative z-10">
+      
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand/20 shadow-glass mb-8">
+        <span class="w-2.5 h-2.5 rounded-full bg-brand-light glow-tube"></span>
+        <span class="text-xs font-bold text-brand-dark tracking-wide uppercase">Ingénierie basée sur les données mobiles réelles anonymisées</span>
+      </div>
+
+      <h1 class="text-4xl sm:text-6xl md:text-7xl font-extrabold text-slate-900 tracking-tight max-w-5xl mx-auto leading-[1.1]">
+        Remplacer les voitures individuelles par des <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand to-emerald-500">lignes express directes</span>.
+      </h1>
+
+      <p class="mt-8 text-lg sm:text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+        Letubevert analyse les millions de signaux géolocalisés de téléphonie mobile pour modéliser les flux réels domicile-travail et concevoir des lignes d'autocars partagés à haute rentabilité écologique.
+      </p>
+
+      <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="portail.html" class="px-8 py-4 rounded-full bg-brand hover:bg-brand-dark text-white font-bold text-base shadow-glow-green hover:scale-[1.02] transition-all flex items-center justify-center gap-2">
+          <i data-lucide="map" class="w-5 h-5"></i>
+          Voir la démonstration cartographique
+        </a>
+        <a href="#comparatif" class="px-8 py-4 rounded-full bg-white hover:bg-slate-50 border border-slate-200 text-slate-800 font-bold text-base shadow-sm transition-all flex items-center justify-center gap-2">
+          <i data-lucide="arrow-down" class="w-5 h-5 text-brand"></i>
+          Comprendre le gain usager & territoire
+        </a>
+      </div>
+
+      <!-- CHIFFRES CLÉS -->
+      <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+        <div class="p-6 rounded-2xl bg-white border border-slate-100 shadow-glass text-center">
+          <div class="text-3xl sm:text-4xl font-extrabold text-slate-900">85,7<span class="text-brand">%</span></div>
+          <div class="text-xs sm:text-sm font-medium text-slate-500 mt-2">D'autosolisme aux heures de pointe</div>
+        </div>
+        <div class="p-6 rounded-2xl bg-white border border-slate-100 shadow-glass text-center">
+          <div class="text-3xl sm:text-4xl font-extrabold text-brand">-85<span class="text-slate-900">%</span></div>
+          <div class="text-xs sm:text-sm font-medium text-slate-500 mt-2">D'émissions de CO₂ par trajet converti</div>
+        </div>
+        <div class="p-6 rounded-2xl bg-white border border-slate-100 shadow-glass text-center">
+          <div class="text-3xl sm:text-4xl font-extrabold text-slate-900">1 500<span class="text-brand">€</span></div>
+          <div class="text-xs sm:text-sm font-medium text-slate-500 mt-2">D'économie directe par an et par actif</div>
+        </div>
+        <div class="p-6 rounded-2xl bg-white border border-slate-100 shadow-glass text-center">
+          <div class="text-3xl sm:text-4xl font-extrabold text-brand">120<span class="text-slate-900">t</span></div>
+          <div class="text-xs sm:text-sm font-medium text-slate-500 mt-2">De CO₂ évitées par an et par car</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- BANDEAU GÉODONNÉES MOBILES ANONYMISÉES -->
+  <section class="py-12 bg-white border-y border-slate-100">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="p-8 sm:p-10 rounded-3xl bg-slate-900 text-white relative overflow-hidden border border-slate-800 shadow-2xl">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-brand/10 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <div class="relative z-10 grid lg:grid-cols-3 gap-8 items-center">
+          <div class="lg:col-span-2">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950 text-emerald-400 border border-emerald-800 text-xs font-bold font-mono mb-4">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+              GÉODONNÉES TÉLÉCOMS RÉELLES (MATRICES OBS / FLUX VISION)
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white leading-snug">
+              Zéro estimation théorique : <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-light to-cyan-400">100 % de déplacements réels observés</span>.
+            </h2>
+            <p class="text-slate-400 text-sm mt-3 leading-relaxed">
+              Le moteur <strong>LEA</strong> s'appuie sur les traces de téléphonie mobile anonymisées et agrégées par les réseaux d'antennes relais. Chaque déplacement domicile-travail est mesuré en continu, éliminant les biais des enquêtes déclaratives et révélant les axes saturés non desservis.
+            </p>
+          </div>
+
+          <div class="grid grid-cols-2 gap-4">
+            <div class="p-4 rounded-2xl bg-slate-800/80 border border-slate-700">
+              <div class="text-2xl font-black text-cyan-400">24h / 24</div>
+              <div class="text-xs text-slate-400 mt-1">Observation continue 7j/7 des flux Origine-Destination</div>
+            </div>
+            <div class="p-4 rounded-2xl bg-slate-800/80 border border-slate-700">
+              <div class="text-2xl font-black text-emerald-400">RGPD</div>
+              <div class="text-xs text-slate-400 mt-1">Anonymisation stricte et recalibrage Insee</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TABLEAU COMPARATIF : MUTUALISÉ VS SOLO -->
+  <section id="comparatif" class="py-24 bg-[#FAFAFA] border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-6">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-xs font-bold uppercase tracking-widest text-brand">Analyse d'Impact</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-3">Pourquoi la mutualisation surpasse la voiture individuelle.</h2>
+        <p class="text-slate-600 mt-4 text-base">Mise en regard directe entre le modèle de l'autosolisme et l'exploitation d'un corridor massifié Letubevert.</p>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        
+        <div class="p-8 rounded-3xl bg-red-50/40 border border-red-100 flex flex-col justify-between">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-bold mb-6">
+              <i data-lucide="x-circle" class="w-4 h-4"></i>
+              Trajet en Voiture Solo
+            </div>
+            <h3 class="text-2xl font-bold text-slate-900">Le modèle saturé et coûteux</h3>
+            
+            <ul class="mt-6 space-y-4 text-sm text-slate-600">
+              <li class="flex items-start gap-3">
+                <span class="w-5 h-5 rounded-full bg-red-200 text-red-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✕</span>
+                <span><strong>75% d'énergie pour du vide :</strong> 1,5 tonne de métal déplacée pour un conducteur seul.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="w-5 h-5 rounded-full bg-red-200 text-red-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✕</span>
+                <span><strong>246 heures perdues :</strong> Temps moyen gaspillé chaque année dans les embouteillages d'entrée de ville.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="w-5 h-5 rounded-full bg-red-200 text-red-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✕</span>
+                <span><strong>Budget lourd :</strong> Jusqu'à 1 500 €/an en carburant et usure pour les trajets domicile-travail.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="w-5 h-5 rounded-full bg-red-200 text-red-700 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✕</span>
+                <span><strong>Emprise foncière :</strong> 12,5 m² immobilisés par voiture sur les parkings d'entreprise.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="p-8 rounded-3xl bg-emerald-50/40 border border-emerald-200 shadow-glass flex flex-col justify-between">
+          <div>
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 text-brand-dark text-xs font-bold mb-6">
+              <i data-lucide="check-circle" class="w-4 h-4 text-brand"></i>
+              Transport Mutualisé Letubevert
+            </div>
+            <h3 class="text-2xl font-bold text-slate-900">Le corridor express décarboné</h3>
+            
+            <ul class="mt-6 space-y-4 text-sm text-slate-700">
+              <li class="flex items-start gap-3">
+                <span class="w-5 h-5 rounded-full bg-emerald-200 text-brand-dark flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✓</span>
+                <span><strong>-85% de CO₂ émis :</strong> Réduction certifiée par les données ADEME par trajet converti.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="w-5 h-5 rounded-full bg-emerald-200 text-brand-dark flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✓</span>
+                <span><strong>Temps utile retrouvé :</strong> Possibilité de lire, travailler ou se reposer sans stress de conduite.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="w-5 h-5 rounded-full bg-emerald-200 text-brand-dark flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✓</span>
+                <span><strong>Gain de pouvoir d'achat :</strong> Économies substantielles complétées par la prise en charge employeur (FMD).</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="w-5 h-5 rounded-full bg-emerald-200 text-brand-dark flex items-center justify-center font-bold text-xs shrink-0 mt-0.5">✓</span>
+                <span><strong>Rendement garanti :</strong> Remplissage ciblé à 80 % sur des cars de 50 places existants.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- NAVIGATION VERS LES AUTRES PAGES -->
+  <section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-6">
+      
+      <div class="text-center max-w-3xl mx-auto mb-16">
+        <span class="text-xs font-bold uppercase tracking-widest text-brand">Architecture du Système</span>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-3">Explorez les modules décisionnels.</h2>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8">
+        
+        <div class="p-8 rounded-3xl bg-[#FAFAFA] border border-slate-200 flex flex-col justify-between shadow-sm">
+          <div>
+            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-brand flex items-center justify-center mb-6">
+              <i data-lucide="map" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900">Le Portail Cartographique</h3>
+            <p class="text-slate-600 text-sm mt-3 leading-relaxed">
+              Consultez les corridors réels, les communes émettrices en cyan et les données de report modal calculées en direct.
+            </p>
+          </div>
+          <a href="portail.html" class="mt-8 inline-flex items-center gap-2 font-bold text-sm text-brand hover:text-brand-dark">
+            Accéder à la carte live →
+          </a>
+        </div>
+
+        <div class="p-8 rounded-3xl bg-[#FAFAFA] border border-slate-200 flex flex-col justify-between shadow-sm">
+          <div>
+            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-brand flex items-center justify-center mb-6">
+              <i data-lucide="binary" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900">Les 40 Indicateurs LEA</h3>
+            <p class="text-slate-600 text-sm mt-3 leading-relaxed">
+              Le socle d'évaluation classé en 4 familles : flux, morphologie territoriale, carbone et potentiel de mutualisation.
+            </p>
+          </div>
+          <a href="indicateurs.html" class="mt-8 inline-flex items-center gap-2 font-bold text-sm text-brand hover:text-brand-dark">
+            Consulter les indicateurs →
+          </a>
+        </div>
+
+        <div class="p-8 rounded-3xl bg-[#FAFAFA] border border-slate-200 flex flex-col justify-between shadow-sm">
+          <div>
+            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-brand flex items-center justify-center mb-6">
+              <i data-lucide="briefcase" class="w-6 h-6"></i>
+            </div>
+            <h3 class="text-xl font-bold text-slate-900">Solutions & Accompagnement</h3>
+            <p class="text-slate-600 text-sm mt-3 leading-relaxed">
+              Plans de mobilité employeurs, conformité PCAET pour les AOM et optimisation de dessertes pour les transporteurs.
+            </p>
+          </div>
+          <a href="solutions.html" class="mt-8 inline-flex items-center gap-2 font-bold text-sm text-brand hover:text-brand-dark">
+            Découvrir nos offres →
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FORMULAIRE DE CONTACT BAS DE PAGE -->
+  <section id="contact" class="py-20 bg-[#FAFAFA] border-t border-slate-100">
+    <div class="max-w-4xl mx-auto px-6 text-center">
+      <span class="text-xs font-bold uppercase tracking-widest text-brand">Collaborons</span>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-slate-900 mt-3">Échangeons sur vos corridors de mobilité.</h2>
+      <p class="text-slate-600 mt-3 text-base">Vous êtes une collectivité, une direction RSE ou un opérateur de transport ? Contactez notre équipe d'ingénierie.</p>
+
+      <form class="mt-12 text-left grid sm:grid-cols-2 gap-6 bg-white p-8 rounded-3xl border border-slate-200 shadow-glass">
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Nom & Prénom</label>
+          <input type="text" placeholder="Ex. : Claire Dupont" class="w-full px-4 py-3 rounded-xl bg-[#FAFAFA] border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand" />
+        </div>
+        <div>
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Organisation / Collectivité</label>
+          <input type="text" placeholder="Ex. : Direction Mobilité & Climat" class="w-full px-4 py-3 rounded-xl bg-[#FAFAFA] border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand" />
+        </div>
+        <div class="sm:col-span-2">
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Email Professionnel</label>
+          <input type="email" placeholder="contact@organisation.fr" class="w-full px-4 py-3 rounded-xl bg-[#FAFAFA] border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand" />
+        </div>
+        <div class="sm:col-span-2">
+          <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">Votre Enjeu de Mobilité</label>
+          <textarea rows="4" placeholder="Précisez votre zone géographique ou les corridors d'autosolisme identifiés..." class="w-full px-4 py-3 rounded-xl bg-[#FAFAFA] border border-slate-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand"></textarea>
+        </div>
+        <div class="sm:col-span-2">
+          <button type="button" class="w-full py-4 rounded-xl bg-brand hover:bg-brand-dark text-white font-bold text-sm shadow-glow-green transition-all">
+            Transmettre la demande d'étude
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="bg-slate-950 text-slate-500 py-12 border-t border-slate-900 text-xs">
+    <div class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div class="flex items-center gap-3">
+        <span class="font-bold text-white text-sm">Letubevert.fr</span>
+        <span class="text-slate-600">|</span>
+        <span>Letubevert Engine Architecture (LEA)</span>
+      </div>
+      <div>© 2026 Letubevert. Tous droits réservés.</div>
+    </div>
+  </footer>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>
